@@ -1,7 +1,9 @@
 import { env } from '$env/dynamic/public';
+import { apiFetch } from "./fetch"
 
 export class Client {
     baseUrl: string
+
     constructor(baseUrl: string) {
         this.baseUrl = baseUrl
     }
@@ -20,7 +22,7 @@ export class Client {
             body: JSON.stringify(reqObj),
         }
 
-        return fetch(this.baseUrl + endpoint, reqOptions)
+        return apiFetch(this.baseUrl + endpoint, reqOptions)
     }
 
     public Get(endpoint: string, queryParams?: any, headers?: Headers): Promise<Response> {
@@ -29,7 +31,7 @@ export class Client {
             headers: headers
         }
         let query = this.getQuery(queryParams)
-        return fetch(this.baseUrl + endpoint + query, reqOptions)
+        return apiFetch(this.baseUrl + endpoint + query, reqOptions)
     }
 
     public Delete(endpoint: string, queryParams?: any, headers?: Headers): Promise<Response> {
@@ -38,7 +40,7 @@ export class Client {
             headers: headers
         }
         let query = this.getQuery(queryParams)
-        return fetch(this.baseUrl + endpoint + query, reqOptions)
+        return apiFetch(this.baseUrl + endpoint + query, reqOptions)
     }
 
     public UserBearerAuthHeader(token: string): Headers {
@@ -53,6 +55,7 @@ export class Client {
         return "?" + new URLSearchParams(params).toString();
     }
 }
+
 
 const apiPath = env.PUBLIC_API_PATH ? env.PUBLIC_API_PATH : "";
 export let DefaultClient = new Client(apiPath);
