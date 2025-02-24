@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Login } from "$lib/backend_client/user";
   import type { LoginRequest } from "$lib/types/login";
-  import { Button, Modal, Label, Input, Checkbox } from "flowbite-svelte";
-  export let formModal = false;
+  import { Button, Modal, Label, Input } from "flowbite-svelte";
+  let { formModal = $bindable() } = $props();
   import { EyeOutline, EyeSlashOutline } from "flowbite-svelte-icons";
-  let showPassword = false;
+  let showPassword = $state(false);
 
   let input: LoginRequest = {
     username: "",
@@ -14,7 +14,6 @@
   async function handleSubmit() {
     let isSuccess = await Login(input);
     formModal = !isSuccess;
-    console.log(formModal);
   }
 </script>
 
@@ -25,7 +24,7 @@
   class="w-full"
   backdropClass="bg-gray-900/50 dark:bg-gray-900/80"
 >
-  <form class="flex flex-col space-y-6" on:submit={handleSubmit} action="#">
+  <form class="flex flex-col space-y-6" onsubmit={handleSubmit} action="#">
     <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
       Войти
     </h3>
@@ -52,7 +51,7 @@
         <button
           type="button"
           slot="left"
-          on:click={() => (showPassword = !showPassword)}
+          onclick={() => (showPassword = !showPassword)}
           class="pointer-events-auto"
         >
           {#if showPassword}
