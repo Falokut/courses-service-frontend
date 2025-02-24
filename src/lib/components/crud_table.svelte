@@ -128,7 +128,7 @@
 
 <Section name="advancedTable" classSection="p-3 sm:p-5">
   <TableSearch
-    placeholder="Search"
+    placeholder="Поиск"
     hoverable={true}
     bind:inputValue={searchTerm}
     {divClass}
