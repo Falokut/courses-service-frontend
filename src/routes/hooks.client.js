@@ -1,22 +1,26 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
 
-/** @type {import('svelte/store').Writable<string[]>} */
-export const errorMessages = writable([]);
+/** @type {import('svelte/store').Writable<any[]>} */
+export const messages = writable([]);
+
+export const AddMessage = (message, isError) => {
+    messages.update((msgs) => [...msgs, { msg: message, isError: isError }]);
+}
 
 export const initGlobalErrorHandler = () => {
     if (!browser) return;
 
     window.onerror = (message, source, lineno, colno, error) => {
         console.error('Global Error:', message, source, lineno, colno, error);
-        errorMessages.update((msgs) => [...msgs, `Ошибка: ${message}`]);
+        AddMessage(`Ошибка: ${message}`, true)
         return false;
     };
 
     window.onunhandledrejection = (event) => {
         console.error('Unhandled Promise Rejection:', event.reason);
         const reason = event.reason?.message || event.reason || 'Неизвестная ошибка';
-        errorMessages.update((msgs) => [...msgs, `Ошибка: ${reason}`]);
+        AddMessage(`Ошибка: ${reason}`, true)
         return false;
     };
 };

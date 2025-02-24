@@ -1,5 +1,6 @@
 <script lang="ts">
   import CrudTable from "$lib/components/crud_table.svelte";
+  import RegisterUserModal from "$lib/components/register_user_modal.svelte";
   import UserRow from "$lib/components/table_rows/user.svelte";
 
   const headers = ["ID", "ФИО", "Имя пользователя", "Роль"];
@@ -19,6 +20,11 @@
       item.fio.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
     );
   };
+
+  let formModal = $state(false);
+  const AddItem = () => {
+    formModal = true;
+  };
 </script>
 
 <CrudTable
@@ -27,4 +33,7 @@
   AddLabel={"Добавить пользователя"}
   FetchData={fetchUsers}
   FilterPredicate={filterPredicate}
+  {AddItem}
 />
+
+<RegisterUserModal bind:formModal></RegisterUserModal>

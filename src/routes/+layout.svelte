@@ -1,7 +1,7 @@
 <script lang="ts">
   import "../app.css";
   import { DarkMode } from "flowbite-svelte";
-  import ErrorToasts from "./error_toasts.svelte";
+  import Toasts from "./toasts.svelte";
 
   let { children } = $props();
 </script>
@@ -10,4 +10,4 @@
 
 {@render children()}
 
-<ErrorToasts></ErrorToasts>
+<Toasts></Toasts>
