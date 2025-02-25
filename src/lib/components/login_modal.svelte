@@ -12,8 +12,9 @@
   };
 
   async function handleSubmit() {
-    let isSuccess = await Login(input);
-    formModal = !isSuccess;
+    if (await Login(input)) {
+      location.reload();
+    }
   }
 </script>
 

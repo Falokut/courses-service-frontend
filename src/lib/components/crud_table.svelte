@@ -67,6 +67,13 @@
   };
 
   const addItem = () => {};
+  export const ItemDeleted = (id: any) => {
+    let paginationDataAfter = paginationData.filter((v) => v.id != id);
+    if (paginationDataAfter.length < paginationData.length) {
+      currentOffset -= 1;
+      paginationData = paginationDataAfter;
+    }
+  };
 
   let {
     HeaderCells = $bindable([]),
@@ -126,7 +133,7 @@
   );
 </script>
 
-<Section name="advancedTable" classSection="p-3 sm:p-5">
+<Section name="advancedTable" sectionClass="p-3 sm:p-5">
   <TableSearch
     placeholder="Поиск"
     hoverable={true}
@@ -146,17 +153,19 @@
     </div>
     <TableHead>
       {#each HeaderCells as cell}
-        <TableHeadCell padding="px-4 py-3" scope="col">{cell}</TableHeadCell>
+        <TableHeadCell padding="px-4 py-3" scope="col"
+          >{cell}</TableHeadCell
+        >
       {/each}
     </TableHead>
     <TableBody class="divide-y">
       {#if searchTerm !== ""}
         {#each filteredItems as value}
-          <BodyRow {value} />
+          <BodyRow {value} {ItemDeleted} />
         {/each}
       {:else}
         {#each currentPageItems as value}
-          <BodyRow {value} />
+          <BodyRow {value} {ItemDeleted} />
         {/each}
       {/if}
     </TableBody>
