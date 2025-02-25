@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
 
 /** @type {import('svelte/store').Writable<any[]>} */
 export const messages = writable([]);

@@ -25,6 +25,14 @@ export class Client {
         return apiFetch(this.baseUrl + endpoint, reqOptions)
     }
 
+    public Post(endpoint: string, headers?: Headers): Promise<Response> {
+        let reqOptions: RequestInit = {
+            method: "POST",
+            headers: headers
+        }
+        return apiFetch(this.baseUrl + endpoint, reqOptions)
+    }
+
     public Get(endpoint: string, queryParams?: any, headers?: Headers): Promise<Response> {
         let reqOptions: RequestInit = {
             method: "GET",

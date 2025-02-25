@@ -16,7 +16,7 @@
   } from "flowbite-svelte-icons";
 
   let divClass =
-    "bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden";
+    "bg-primary-300 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden";
   let innerDivClass =
     "flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4";
   let searchClass = "w-full md:w-1/2 relative";
@@ -67,6 +67,13 @@
   };
 
   const addItem = () => {};
+  export const ItemDeleted = (id: any) => {
+    let paginationDataAfter = paginationData.filter((v) => v.id != id);
+    if (paginationDataAfter.length < paginationData.length) {
+      currentOffset -= 1;
+      paginationData = paginationDataAfter;
+    }
+  };
 
   let {
     HeaderCells = $bindable([]),
@@ -124,9 +131,11 @@
   let endRange = $derived(
     Math.min(currentOffset + itemsPerPage, paginationData.length)
   );
+
+  const rowAndHeaderClass = "bg-primary-300 dark:bg-gray-800";
 </script>
 
-<Section name="advancedTable" classSection="p-3 sm:p-5">
+<Section name="advancedTable" sectionClass="p-3 sm:p-5">
   <TableSearch
     placeholder="Поиск"
     hoverable={true}
@@ -144,7 +153,7 @@
         <PlusOutline class="h-3.5 w-3.5 mr-2" />{AddLabel}
       </Button>
     </div>
-    <TableHead>
+    <TableHead class={rowAndHeaderClass}>
       {#each HeaderCells as cell}
         <TableHeadCell padding="px-4 py-3" scope="col">{cell}</TableHeadCell>
       {/each}
@@ -152,11 +161,19 @@
     <TableBody class="divide-y">
       {#if searchTerm !== ""}
         {#each filteredItems as value}
-          <BodyRow {value} />
+          <BodyRow
+            rowClass={rowAndHeaderClass}
+            {value}
+            {ItemDeleted}
+          />
         {/each}
       {:else}
         {#each currentPageItems as value}
-          <BodyRow {value} />
+          <BodyRow
+            rowClass={rowAndHeaderClass}
+            {value}
+            {ItemDeleted}
+          />
         {/each}
       {/if}
     </TableBody>

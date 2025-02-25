@@ -1,13 +1,13 @@
 <script lang="ts">
   import "../app.css";
-  import { DarkMode } from "flowbite-svelte";
   import Toasts from "./toasts.svelte";
+  import NavBar from "$lib/components/nav_bar.svelte";
 
   let { children } = $props();
 </script>
 
-<DarkMode />
+<NavBar />
 
 {@render children()}
 
-<Toasts></Toasts>
+<Toasts />
