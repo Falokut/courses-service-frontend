@@ -23,14 +23,52 @@
   let classInput =
     "text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2  pl-10";
 
+  import {Paginator} from "$lib/utils/paginator"
+
+  const emptyFetchData = async (
+    offset: number,
+    limit: number
+  ): Promise<any[]> => {
+    return [];
+  };
+
+  let currentPageItems:any[] = $state([])
+  const refetchPageData = async(force:boolean)=>{
+    currentPageItems = await paginator.getPageData(currentPage, itemsPerPage,force)
+  }
+
+  const filterPredicate = (v: any, searchTerm: string): boolean => {
+    return true;
+  };
+
+  let {
+    HeaderCells = $bindable([]),
+    AddLabel = $bindable(""),
+    FetchData = emptyFetchData,
+    BodyRow = $bindable(),
+    FilterPredicate = filterPredicate,
+    AddItem = ()=>{},
+  } = $props();
   const batchSize = 100;
+
+  let paginator = $derived(new Paginator<any>(FetchData, batchSize));
+  
+  const ItemDeleted = (id: any) => {
+    paginator.deleteItem((v)=>{return id==v.id})
+    refetchPageData(true)
+  };
+
+  const ItemAdded = ()=>{
+    refetchPageData(true)
+  }
+
   let searchTerm: string = $state("");
-  let currentOffset: number = $state(0);
   const itemsPerPage: number = 10;
   const showPage: number = 5;
-  let paginationData: any[] = $state([]);
-  let totalPages = $derived(Math.ceil(paginationData.length / itemsPerPage));
+  let totalPages = $derived(Math.ceil(paginator.getTotalItems() / itemsPerPage));
   let currentPage = $state(1);
+  let startRange = $derived(Math.max((itemsPerPage-1)* currentPage,0));
+  let endRange = $derived(Math.max(itemsPerPage * currentPage,0));
 
   const calculatePagesToShow = () => {
     let startPage = Math.max(1, currentPage - Math.floor(showPage / 2));
@@ -47,90 +85,30 @@
 
   let pagesToShow: number[] = $derived(calculatePagesToShow());
 
-  const emptyFetchData = async (
-    offset: number,
-    limit: number
-  ): Promise<any[]> => {
-    return [];
-  };
-
-  let isFetching = $state(false);
-  let lastFetchFull = $state(true);
-  let currentPageItems = $derived(
-    paginationData.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    )
-  );
-  const filterPredicate = (v: any, searchTerm: string): boolean => {
-    return true;
-  };
-
-  const addItem = () => {};
-  export const ItemDeleted = (id: any) => {
-    let paginationDataAfter = paginationData.filter((v) => v.id != id);
-    if (paginationDataAfter.length < paginationData.length) {
-      currentOffset -= 1;
-      paginationData = paginationDataAfter;
-    }
-  };
-
-  let {
-    HeaderCells = $bindable([]),
-    AddLabel = $bindable(""),
-    FetchData = emptyFetchData,
-    BodyRow = $bindable(),
-    FilterPredicate = filterPredicate,
-    AddItem = addItem,
-  } = $props();
-
-  const loadPageData = async () => {
-    if (isFetching) return;
-
-    isFetching = true;
-    const items = await FetchData(paginationData.length, batchSize);
-    isFetching = false;
-
-    lastFetchFull = items.length === batchSize;
-
-    paginationData = [...paginationData, ...items];
-  };
-
-  const loadNextPage = async () => {
-    const nextPage = currentPage + 1;
-    const maxPage = Math.ceil(paginationData.length / itemsPerPage);
-
-    if (nextPage > maxPage && lastFetchFull) {
-      await loadPageData();
-    }
-
-    if (nextPage <= Math.ceil(paginationData.length / itemsPerPage)) {
-      currentPage = nextPage;
-    }
+  const loadNextPage = () => {
+    currentPage = currentPage + 1;
+    refetchPageData(false)
   };
 
   const loadPreviousPage = () => {
-    if (currentOffset >= itemsPerPage) {
-      currentOffset -= itemsPerPage;
-    }
+    currentPage = currentPage - 1;
+    refetchPageData(false)
   };
 
   const goToPage = (pageNumber: number) => {
     currentPage = pageNumber;
+    refetchPageData(false)
   };
 
   let filteredItems = $derived(
-    paginationData.filter((v) => {
+    paginator.GetAllData().filter((v) => {
       return FilterPredicate(v, searchTerm);
     })
   );
 
-  onMount(loadPageData);
-
-  let startRange = $derived(currentOffset + 1);
-  let endRange = $derived(
-    Math.min(currentOffset + itemsPerPage, paginationData.length)
-  );
+  onMount(()=>{
+    refetchPageData(false)
+  });
 
   const rowAndHeaderClass = "bg-primary-300 dark:bg-gray-800";
 </script>
@@ -149,7 +127,7 @@
       slot="header"
       class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0"
     >
-      <Button on:click={AddItem}>
+      <Button on:click={()=>{AddItem()}}>
         <PlusOutline class="h-3.5 w-3.5 mr-2" />{AddLabel}
       </Button>
     </div>
@@ -165,16 +143,18 @@
             rowClass={rowAndHeaderClass}
             {value}
             {ItemDeleted}
+            {ItemAdded}
           />
         {/each}
       {:else}
-        {#each currentPageItems as value}
-          <BodyRow
-            rowClass={rowAndHeaderClass}
-            {value}
-            {ItemDeleted}
-          />
-        {/each}
+      {#each currentPageItems as value}
+      <BodyRow
+        rowClass={rowAndHeaderClass}
+        {value}
+        {ItemDeleted}
+        {ItemAdded}
+      />
+    {/each}
       {/if}
     </TableBody>
     <div
@@ -188,7 +168,7 @@
         >
       </span>
       <ButtonGroup>
-        <Button on:click={loadPreviousPage} disabled={currentOffset === 0}
+        <Button on:click={loadPreviousPage} disabled={currentPage === 1}
           ><ChevronLeftOutline size="xs" class="m-1.5" /></Button
         >
         {#each pagesToShow as pageNumber}
@@ -199,8 +179,7 @@
         {/each}
         <Button
           on:click={loadNextPage}
-          disabled={!lastFetchFull &&
-            currentPage * itemsPerPage >= paginationData.length}
+          disabled={currentPage * itemsPerPage >= paginator.getTotalItems() || !paginator.canLoadMore()}
           ><ChevronRightOutline size="xs" class="m-1.5" /></Button
         >
       </ButtonGroup>

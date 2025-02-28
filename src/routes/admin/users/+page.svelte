@@ -6,7 +6,7 @@
   import { GetRole } from "$lib/types/roles";
 
   const headers = ["ID", "ФИО", "Имя пользователя", "Роль", ""];
-  async function fetchUsers(offset: number, limit: number): Promise<any[]> {
+  async function fetchUsers(limit: number, offset: number): Promise<any[]> {
     let users = await GetUsers(limit, offset);
     let filteredUsers: any[] = [];
     users.forEach((u) => {
