@@ -10,14 +10,7 @@
   } from "flowbite-svelte";
   import { AngleLeftOutline } from "flowbite-svelte-icons";
   import { sineIn } from "svelte/easing";
-
-  interface Lesson {
-    id: number;
-    title: string;
-    created_at: string;
-    content: string;
-    video_url: string;
-  }
+  import type { Lesson } from "$lib/types/lesson";
 
   let {
     lessons = $bindable<Lesson[]>([]),

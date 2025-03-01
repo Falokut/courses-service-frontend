@@ -54,28 +54,29 @@
   };
 </script>
 
-<Navbar class="bg-primary-300">
+<Navbar class="bg-primary-100">
   <DarkMode />
   <div class="flex flex-row gap-3">
-    <NavUl hidden={false} class="order-1" {activeUrl}>
+    <NavUl hidden={false} class="order-1" {activeUrl} 
+    ulClass="flex flex-col p-4 mt-4 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:text-sm md:font-medium items-center">
       {#each pages as page}
         <NavLi href={page.url}>{page.prettyName}</NavLi>
       {/each}
+      <div class="flex order-2">
+        {#if role == "guest"}
+          <Button size="sm" onclick={() => (loginModal = true)}>Войти</Button>
+        {:else}
+          <div class="items-center">
+            <Avatar id="avatar-menu" />
+          </div>
+          <Dropdown placement="bottom" triggeredBy="#avatar-menu">
+            <DropdownItem href="/profile/sessions">Сессии</DropdownItem>
+            <DropdownDivider />
+            <DropdownItem onclick={logout}>Выйти</DropdownItem>
+          </Dropdown>
+        {/if}
+      </div>
     </NavUl>
-    <div class="flex md:order-2">
-      {#if role == "guest"}
-        <Button size="sm" onclick={() => (loginModal = true)}>Войти</Button>
-      {:else}
-        <div class="items-center">
-          <Avatar id="avatar-menu" />
-        </div>
-        <Dropdown placement="bottom" triggeredBy="#avatar-menu">
-          <DropdownItem href="/profile/sessions">Сессии</DropdownItem>
-          <DropdownDivider />
-          <DropdownItem onclick={logout}>Выйти</DropdownItem>
-        </Dropdown>
-      {/if}
-    </div>
   </div>
 </Navbar>
 

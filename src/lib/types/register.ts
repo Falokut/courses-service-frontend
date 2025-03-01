@@ -1,10 +1,4 @@
-export class RegisterRequest {
-    constructor() {
-        this.username = "";
-        this.password = "";
-        this.fio = "";
-        this.roleId = 0;
-    };
+export interface RegisterRequest {
     fio: string;
     username: string;
     password: string;

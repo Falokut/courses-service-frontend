@@ -16,26 +16,30 @@
   } from "flowbite-svelte-icons";
 
   let divClass =
-    "bg-primary-300 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden";
+    "bg-primary-50 dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden";
   let innerDivClass =
     "flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4";
   let searchClass = "w-full md:w-1/2 relative";
   let classInput =
     "text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2  pl-10";
 
-  import {Paginator} from "$lib/utils/paginator"
+  import { Paginator } from "$lib/utils/paginator.svelte";
 
   const emptyFetchData = async (
-    offset: number,
-    limit: number
+    limty: number,
+    offset: number
   ): Promise<any[]> => {
     return [];
   };
 
-  let currentPageItems:any[] = $state([])
-  const refetchPageData = async(force:boolean)=>{
-    currentPageItems = await paginator.getPageData(currentPage, itemsPerPage,force)
-  }
+  let currentPageItems: any[] = $state([]);
+  const refetchPageData = async (force: boolean) => {
+    currentPageItems = await paginator.getPageData(
+      currentPage,
+      itemsPerPage,
+      force
+    );
+  };
 
   const filterPredicate = (v: any, searchTerm: string): boolean => {
     return true;
@@ -47,28 +51,41 @@
     FetchData = emptyFetchData,
     BodyRow = $bindable(),
     FilterPredicate = filterPredicate,
-    AddItem = ()=>{},
+    AddItem = () => {},
   } = $props();
   const batchSize = 100;
 
   let paginator = $derived(new Paginator<any>(FetchData, batchSize));
-  
+
   const ItemDeleted = (id: any) => {
-    paginator.deleteItem((v)=>{return id==v.id})
-    refetchPageData(true)
+    paginator.deleteItem((v) => {
+      return id == v.id;
+    });
+    refetchPageData(true);
   };
 
-  const ItemAdded = ()=>{
-    refetchPageData(true)
-  }
+  const ItemAdded = () => {
+    refetchPageData(true);
+  };
 
   let searchTerm: string = $state("");
   const itemsPerPage: number = 10;
   const showPage: number = 5;
-  let totalPages = $derived(Math.ceil(paginator.getTotalItems() / itemsPerPage));
+  let totalPages = $derived(Math.ceil(paginator.totalItems / itemsPerPage));
   let currentPage = $state(1);
-  let startRange = $derived(Math.max((itemsPerPage-1)* currentPage,0));
-  let endRange = $derived(Math.max(itemsPerPage * currentPage,0));
+  let startRange = $state(0);
+  let endRange = $state(0);
+
+  $effect(() => {
+    const pageItems =
+      searchTerm != "" ? filteredItems.length : currentPageItems.length;
+    if (pageItems == 0) {
+      startRange = Math.max((currentPage - 1) * itemsPerPage, 0);
+    } else {
+      startRange = Math.max((currentPage - 1) * itemsPerPage, 0) + 1;
+    }
+    endRange = Math.min(itemsPerPage * currentPage, startRange + pageItems);
+  });
 
   const calculatePagesToShow = () => {
     let startPage = Math.max(1, currentPage - Math.floor(showPage / 2));
@@ -87,17 +104,17 @@
 
   const loadNextPage = () => {
     currentPage = currentPage + 1;
-    refetchPageData(false)
+    refetchPageData(false);
   };
 
   const loadPreviousPage = () => {
     currentPage = currentPage - 1;
-    refetchPageData(false)
+    refetchPageData(false);
   };
 
   const goToPage = (pageNumber: number) => {
     currentPage = pageNumber;
-    refetchPageData(false)
+    refetchPageData(false);
   };
 
   let filteredItems = $derived(
@@ -106,11 +123,11 @@
     })
   );
 
-  onMount(()=>{
-    refetchPageData(false)
+  onMount(() => {
+    refetchPageData(false);
   });
 
-  const rowAndHeaderClass = "bg-primary-300 dark:bg-gray-800";
+  const rowAndHeaderClass = "bg-primary-100 dark:bg-gray-800";
 </script>
 
 <Section name="advancedTable" sectionClass="p-3 sm:p-5">
@@ -127,7 +144,11 @@
       slot="header"
       class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0"
     >
-      <Button on:click={()=>{AddItem()}}>
+      <Button
+        on:click={() => {
+          AddItem();
+        }}
+      >
         <PlusOutline class="h-3.5 w-3.5 mr-2" />{AddLabel}
       </Button>
     </div>
@@ -147,14 +168,14 @@
           />
         {/each}
       {:else}
-      {#each currentPageItems as value}
-      <BodyRow
-        rowClass={rowAndHeaderClass}
-        {value}
-        {ItemDeleted}
-        {ItemAdded}
-      />
-    {/each}
+        {#each currentPageItems as value}
+          <BodyRow
+            rowClass={rowAndHeaderClass}
+            {value}
+            {ItemDeleted}
+            {ItemAdded}
+          />
+        {/each}
       {/if}
     </TableBody>
     <div
@@ -168,20 +189,22 @@
         >
       </span>
       <ButtonGroup>
-        <Button on:click={loadPreviousPage} disabled={currentPage === 1}
-          ><ChevronLeftOutline size="xs" class="m-1.5" /></Button
-        >
+        <Button on:click={loadPreviousPage} disabled={currentPage === 1}>
+          <ChevronLeftOutline size="xs" class="m-1.5" />
+        </Button>
         {#each pagesToShow as pageNumber}
           <Button
             disabled={currentPage == pageNumber}
-            on:click={() => goToPage(pageNumber)}>{pageNumber}</Button
-          >
+            on:click={() => goToPage(pageNumber)}
+            >{pageNumber}
+          </Button>
         {/each}
         <Button
           on:click={loadNextPage}
-          disabled={currentPage * itemsPerPage >= paginator.getTotalItems() || !paginator.canLoadMore()}
-          ><ChevronRightOutline size="xs" class="m-1.5" /></Button
+          disabled={currentPage >= totalPages && !paginator.canLoadMore}
         >
+          <ChevronRightOutline size="xs" class="m-1.5" />
+        </Button>
       </ButtonGroup>
     </div>
   </TableSearch>

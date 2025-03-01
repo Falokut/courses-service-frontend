@@ -30,7 +30,7 @@ const pagesByRole = {
     lector: [
         {
             url: '/',
-            prettyName: 'домашняя'
+            prettyName: 'Домашняя'
         },
         {
             url: '/courses',
