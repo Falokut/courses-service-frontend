@@ -1,10 +1,4 @@
-export class User {
-    constructor() {
-        this.id = 0;
-        this.fio = "";
-        this.roleName = "";
-        this.username = "";
-    }
+export interface User {
     id: number;
     username: string;
     fio: string;

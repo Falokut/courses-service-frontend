@@ -1,45 +1,56 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Card } from "flowbite-svelte";
+  import { Button, ButtonGroup, Card, Pagination } from "flowbite-svelte";
+  import { Paginator } from "$lib/utils/paginator";
+  import type { CoursePreview } from "$lib/types/course_preview";
+  import { page } from "$app/state";
+  import { GetCourses } from "$lib/backend_client/course";
+  import {
+    ChevronLeftOutline,
+    ChevronRightOutline,
+  } from "flowbite-svelte-icons";
 
-  interface Course {
-    id: number;
-    title: string;
-    author: string;
-    image: string;
+  const showPage: number = 5;
+  const itemsPerPage = 10;
+  let paginator = new Paginator<CoursePreview>(GetCourses, itemsPerPage);
+  let courses: CoursePreview[] = $state([]);
+  let currentPage = $state(1);
+
+  let totalItems = $state(0);
+  let totalPages = $derived(Math.ceil(totalItems / itemsPerPage));
+
+  const calculatePagesToShow = () => {
+    let startPage = Math.max(1, currentPage - Math.floor(showPage / 2));
+    let endPage = Math.min(startPage + showPage - 1, totalPages);
+
+    if (endPage - startPage + 1 < showPage) {
+      startPage = Math.max(1, endPage - showPage + 1);
+    }
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, i) => startPage + i
+    );
+  };
+
+  let pagesToShow: number[] = $derived(calculatePagesToShow());
+
+  async function loadPage(page: number) {
+    currentPage = page;
+    courses = await paginator.getPageData(page, itemsPerPage, false);
+    totalItems = paginator.getTotalItems();
   }
 
-  let courses: Course[] = [];
-
-  onMount(async () => {
-    // Замените этот код на реальный запрос к API
-    courses = [
-      {
-        id: 1,
-        title: "Введение в программирование",
-        author: "Иван Иванов",
-        image: "/images/course1.jpg",
-      },
-      {
-        id: 2,
-        title: "Svelte для начинающих",
-        author: "Анна Петрова",
-        image: "/images/course2.jpg",
-      },
-      {
-        id: 3,
-        title: "Разработка веб-приложений",
-        author: "Максим Смирнов",
-        image: "/images/course3.jpg",
-      },
-      {
-        id: 4,
-        title: "Алгоритмы и структуры данных",
-        author: "Екатерина Васильева",
-        image: "/images/course4.jpg",
-      },
-    ];
+  onMount(() => {
+    loadPage(1);
   });
+
+  const loadPreviousPage = () => {
+    loadPage(currentPage - 1);
+  };
+
+  const loadNextPage = () => {
+    loadPage(currentPage + 1);
+  };
 </script>
 
 <div class="container mx-auto p-6">
@@ -52,7 +63,7 @@
   >
     {#each courses as course}
       <Card
-        img={course.image}
+        img={course.preview_picture_url}
         class="rounded-lg shadow-lg transition-transform transform hover:scale-105"
         href="/courses/{course.id}"
       >
@@ -67,4 +78,22 @@
       </Card>
     {/each}
   </div>
+
+  <ButtonGroup>
+    <Button on:click={loadPreviousPage} disabled={currentPage === 1}
+      ><ChevronLeftOutline size="xs" class="m-1.5" /></Button
+    >
+    {#each pagesToShow as pageNumber}
+      <Button
+        disabled={currentPage == pageNumber}
+        on:click={() => loadPage(pageNumber)}>{pageNumber}</Button
+      >
+    {/each}
+    <Button
+      on:click={loadNextPage}
+      disabled={currentPage * itemsPerPage >= totalItems ||
+        !paginator.canLoadMore()}
+      ><ChevronRightOutline size="xs" class="m-1.5" /></Button
+    >
+  </ButtonGroup>
 </div>

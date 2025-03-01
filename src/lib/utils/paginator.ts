@@ -12,7 +12,7 @@ export class Paginator<T> {
       const requiredItems = page * itemsPerPage;
       if (this.data.length < requiredItems && this.lastFetchFull) {
         await this.loadMoreData();
-      } else  if (force) {
+      } else if (force) {
         await this.refetchData(page, itemsPerPage);
       }
 

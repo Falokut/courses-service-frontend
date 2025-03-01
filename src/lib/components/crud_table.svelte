@@ -26,8 +26,8 @@
   import {Paginator} from "$lib/utils/paginator"
 
   const emptyFetchData = async (
-    offset: number,
-    limit: number
+    limty: number,
+    offset: number
   ): Promise<any[]> => {
     return [];
   };
