@@ -33,13 +33,10 @@
 
   onMount(async () => {
     let fetchedSessions = await GetUserSessions();
-
-    fetchedSessions.forEach((_, i) => {
-      fetchedSessions[i].createdAt = moment(fetchedSessions[i].createdAt).local(
-        true
-      );
+    sessions = [];
+    fetchedSessions.forEach((v) => {
+      sessions.push({ id: v.id, createdAt: moment(v.createdAt).local(true) });
     });
-    sessions = fetchedSessions;
     sortSessions();
   });
 
@@ -57,7 +54,7 @@
 
 <Section name="content" sectionClass="p-3 sm:p-5">
   <div class="flex justify-between mb-3 flex-nowrap">
-    <Heading>Текущие сессии</Heading>
+    <Heading class="text-2xl">Текущие сессии</Heading>
     <Button
       color={"primary"}
       on:click={() => {

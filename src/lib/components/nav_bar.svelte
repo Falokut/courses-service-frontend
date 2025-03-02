@@ -70,7 +70,7 @@
             <Avatar id="avatar-menu" />
           </div>
           <Dropdown placement="bottom" triggeredBy="#avatar-menu">
-            <DropdownItem href="/profile/sessions">Сессии</DropdownItem>
+            <DropdownItem href="/profile">Профиль</DropdownItem>
             <DropdownDivider />
             <DropdownItem onclick={logout}>Выйти</DropdownItem>
           </Dropdown>

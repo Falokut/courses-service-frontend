@@ -1,6 +1,8 @@
 import type { LoginRequest } from "$lib/types/login";
 import type { User } from "$lib/types/user";
 import type { RegisterRequest } from "$lib/types/register";
+import type { Session } from "$lib/types/session";
+import type { UserProfile } from "$lib/types/user_profile";
 import { DefaultClient } from "$lib/utils/client";
 import { SaveSessionId, GetSessionId, DeleteSessionId } from "$lib/utils/session";
 
@@ -48,13 +50,13 @@ export async function GetUsers(limit: number, offset: number): Promise<User[]> {
         then(r => r.json())
 }
 
-const deleteUserEndpoint = "/users/"
+const deleteUserEndpoint = "/users"
 export async function DeleteUser(userId: number): Promise<boolean> {
     let sessionId = GetSessionId()
     if (!sessionId || sessionId == "") {
         throw Error("метод не доступен, пользователь не авторизован")
     }
-    let r = await DefaultClient.Delete(deleteUserEndpoint + userId, null, DefaultClient.UserBearerAuthHeader(sessionId))
+    let r = await DefaultClient.Delete(deleteUserEndpoint, { "userId": userId }, DefaultClient.UserBearerAuthHeader(sessionId))
     return r.ok
 }
 
@@ -86,7 +88,7 @@ export async function TerminateUserSession(id: string): Promise<boolean> {
 }
 
 const getUserSessionsEndpoint = "/auth/sessions"
-export async function GetUserSessions(): Promise<any[]> {
+export async function GetUserSessions(): Promise<Session[]> {
     let sessionId = GetSessionId()
     if (!sessionId || sessionId == "") {
         throw Error("метод не доступен, пользователь не авторизован")
@@ -98,3 +100,15 @@ export async function GetUserSessions(): Promise<any[]> {
     ).then(r => r.json())
 }
 
+const getUserProfileEndpoint = "/users/profile"
+export async function GetUserProfile(): Promise<UserProfile> {
+    let sessionId = GetSessionId()
+    if (!sessionId || sessionId == "") {
+        throw Error("метод не доступен, пользователь не авторизован")
+    }
+    return await DefaultClient.Get(
+        getUserProfileEndpoint,
+        null,
+        DefaultClient.UserBearerAuthHeader(sessionId),
+    ).then(r => r.json())
+}
