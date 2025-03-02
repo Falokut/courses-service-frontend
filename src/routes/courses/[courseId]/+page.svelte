@@ -9,9 +9,9 @@
   import type { Lesson } from "$lib/types/lesson";
   import type { Course } from "$lib/types/course";
 
-  let course = $state<Course>();
+  let course = $state<Course | null>(null);
   let isRegistered = $state(false);
-  let selectedLesson = $state<Lesson>();
+  let selectedLesson = $state<Lesson | null>(null);
 
   const fetchCourse = async (courseId: string) => {
     course = await GetCourse(courseId);
@@ -29,20 +29,18 @@
   };
 </script>
 
-<Section name="content">
-  {#if course != null}
-    <div class="flex content-around items-center">
-      <Heading tag="h2" class="p-2xl font-bold">{course.title}</Heading>
-      {#if !isRegistered}
-        <Button class="mt-4" on:click={registerForCourse}
-          >Записаться на курс</Button
-        >
-      {/if}
-    </div>
-    <Heading tag="h5">Автор: {course.authorFio}</Heading>
-    <div class="bg-primary-50 rounded dark:bg-gray-800">
+{#if course}
+  <Section name="content">
+    <div class="mt-10 bg-primary-50 rounded dark:bg-gray-800 p-5">
+      <div class="flex content-around items-center">
+        <Heading tag="h2" class="p-2xl font-bold">{course.title}</Heading>
+        {#if !isRegistered}
+          <Button class="mt-4" on:click={registerForCourse}>Подписаться</Button>
+        {/if}
+      </div>
+      <Heading tag="h5">Автор: {course.authorFio}</Heading>
       <Lessons bind:lessons={course.lessons} bind:selectedLesson />
       <SelectedLesson bind:lesson={selectedLesson} />
     </div>
-  {/if}
-</Section>
+  </Section>
+{/if}

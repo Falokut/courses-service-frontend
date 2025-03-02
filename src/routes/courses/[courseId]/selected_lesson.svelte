@@ -19,10 +19,9 @@
       class={videoDivClass}
     />
   {/if}
-  <div class="w-full p-10 mt-10">
-    <Heading
-      class="w-full flex justify-between items-center mb-5 dark:text-gray-100 "
-      >{lesson.title}
+  <div class="w-full mt-10">
+    <Heading class="mb-5">
+      {lesson.title}
     </Heading>
     <Span class="text-pretty w-full text-justify whitespace-pre-wrap">
       {lesson.lessonContent}
