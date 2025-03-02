@@ -5,6 +5,7 @@ import type { Session } from "$lib/types/session";
 import type { UserProfile } from "$lib/types/user_profile";
 import { DefaultClient } from "$lib/utils/client";
 import { SaveSessionId, GetSessionId, DeleteSessionId } from "$lib/utils/session";
+import type { EditUserRequest } from "$lib/types/edit_user";
 
 const loginEndpoint = "/auth/login"
 export async function Login(loginRequest: LoginRequest): Promise<boolean> {
@@ -57,6 +58,16 @@ export async function DeleteUser(userId: number): Promise<boolean> {
         throw Error("метод не доступен, пользователь не авторизован")
     }
     let r = await DefaultClient.Delete(deleteUserEndpoint, { "userId": userId }, DefaultClient.UserBearerAuthHeader(sessionId))
+    return r.ok
+}
+
+const editUserEndpoint = "/users"
+export async function EditUser(req: EditUserRequest): Promise<boolean> {
+    let sessionId = GetSessionId()
+    if (!sessionId || sessionId == "") {
+        throw Error("метод не доступен, пользователь не авторизован")
+    }
+    let r = await DefaultClient.PostJSON(editUserEndpoint, req, DefaultClient.UserBearerAuthHeader(sessionId))
     return r.ok
 }
 

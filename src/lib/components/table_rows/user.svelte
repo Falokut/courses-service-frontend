@@ -2,15 +2,16 @@
   import { DeleteUser } from "$lib/backend_client/user";
   import { Button, TableBodyCell, TableBodyRow } from "flowbite-svelte";
   import DeleteModal from "../delete_modal.svelte";
+  import EditUserModal from "../edit_user_modal.svelte";
   let emptyItemDeleted = (id: any) => {};
   let {
     value = $bindable(),
     ItemDeleted = emptyItemDeleted,
     rowClass,
   } = $props();
-  let EditUser = () => {};
 
   let openDeleteModal = $state(false);
+  let openEditModal = $state(false);
 
   const deleteText = `Вы уверены, что хотите удалить пользователя с id ${value.id}?`;
 </script>
@@ -28,7 +29,7 @@
       >
         Удалить
       </Button>
-      <Button onclick={EditUser}>Редактировать</Button>
+      <Button onclick={() => (openEditModal = true)}>Редактировать</Button>
     </div>
   </TableBodyCell>
 </TableBodyRow>
@@ -41,3 +42,5 @@
   }}
   HandleCancel={() => {}}
 />
+
+<EditUserModal bind:formModal={openEditModal} bind:user={value}></EditUserModal>

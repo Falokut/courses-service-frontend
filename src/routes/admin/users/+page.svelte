@@ -25,9 +25,9 @@
     );
   };
 
-  let formModal = $state(false);
+  let formRegisterModal = $state(false);
   const AddItem = () => {
-    formModal = true;
+    formRegisterModal = true;
   };
 </script>
 
@@ -40,4 +40,4 @@
   {AddItem}
 />
 
-<RegisterUserModal bind:formModal></RegisterUserModal>
+<RegisterUserModal bind:formModal={formRegisterModal}></RegisterUserModal>

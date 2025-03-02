@@ -1,12 +1,13 @@
 <script lang="ts">
   import { GetRoles } from "$lib/backend_client/roles";
-  import { Register } from "$lib/backend_client/user";
+  import { EditUser } from "$lib/backend_client/user";
   import { Button, Modal, Label, Input, Select } from "flowbite-svelte";
   import { EyeOutline, EyeSlashOutline } from "flowbite-svelte-icons";
   import { onMount } from "svelte";
   import { AddMessage } from "../../routes/hooks.client";
+  import type { User } from "$lib/types/user";
   let showPassword = $state(false);
-  let { formModal = $bindable() } = $props();
+  let { formModal = $bindable(), user = $bindable<User>() } = $props();
 
   let input = $state({
     name: "",
@@ -17,20 +18,41 @@
     roleId: 0,
   });
 
+  function parseFullName(fullName: string) {
+    const parts = fullName.trim().split(/\s+/);
+    return {
+      lastName: parts[0] || "",
+      firstName: parts[1] || "",
+      patronymic: parts[2] || "",
+    };
+  }
+
   async function handleSubmit() {
     let fioArr = [input.lastName, input.name];
     if (input.patronymic != "") {
       fioArr = [...fioArr, input.patronymic];
     }
-    let isSuccess = await Register({
+
+    const updateReq = {
+      userId: user.id,
       fio: fioArr.join(" "),
       username: input.username,
       password: input.password,
       roleId: input.roleId,
-    });
+    };
+
+    let isSuccess = await EditUser(updateReq);
     formModal = !isSuccess;
     if (isSuccess) {
-      AddMessage("пользователь успешно зарегистрирован", false);
+      AddMessage("данные пользователя успешно изменены", false);
+      user.fio = updateReq.fio;
+      user.username = updateReq.username;
+      const roleIndex = rolesValues.findIndex((v) => {
+        return v.value == input.roleId;
+      });
+      if (roleIndex != -1) {
+        user.roleName = rolesValues[roleIndex].name;
+      }
     }
   }
 
@@ -41,6 +63,20 @@
     roles.forEach((v) => {
       rolesValues = [...rolesValues, { value: v.id, name: v.name }];
     });
+  });
+
+  $effect(() => {
+    const fio = parseFullName(user.fio);
+    input.lastName = fio.lastName;
+    input.name = fio.firstName;
+    input.patronymic = fio.patronymic;
+    input.username = user.username;
+    const roleIndex = rolesValues.findIndex((v) => {
+      return v.name == user.roleName;
+    });
+    if (roleIndex != -1) {
+      input.roleId = rolesValues[roleIndex].value;
+    }
   });
 </script>
 
@@ -53,7 +89,7 @@
 >
   <form class="flex flex-col space-y-6" onsubmit={handleSubmit} action="#">
     <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-      Регистрация
+      Редактирование данных пользователя
     </h3>
     <div class="grid gap-6 mb-6 sm:grid-cols-3">
       <div class="mb-2">
@@ -128,6 +164,6 @@
         <Select class="mt-2" items={rolesValues} bind:value={input.roleId} />
       </Label>
     </div>
-    <Button type="submit" class="w-full">Зарегистрировать</Button>
+    <Button type="submit" class="w-full">Сохранить</Button>
   </form>
 </Modal>
