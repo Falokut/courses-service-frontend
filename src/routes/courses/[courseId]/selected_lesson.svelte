@@ -24,7 +24,7 @@
       class="w-full flex justify-between items-center mb-5 dark:text-gray-100 "
       >{lesson.title}
     </Heading>
-    <Span class="text-pretty w-full text-justify">
+    <Span class="text-pretty w-full text-justify whitespace-pre-wrap">
       {lesson.lessonContent}
     </Span>
   </div>
