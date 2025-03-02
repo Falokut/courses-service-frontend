@@ -12,7 +12,7 @@
   });
 </script>
 
-<main class="max-w-4xl mx-auto p-6 space-y-6 bg-primary-100 mt-5 rounded-2xl">
+<main class="max-w-4xl mx-auto p-6 space-y-6 bg-primary-100 dark:bg-gray-800 mt-5 rounded-2xl">
   <div class="p-4">
     <Heading class="text-2xl w-full text-center">Профиль пользователя</Heading>
     <P class="text-lg mt-2"><strong>ФИО:</strong> {user?.fio}</P>
