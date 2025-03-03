@@ -15,7 +15,14 @@
   } = $props();
 </script>
 
-<Modal title="" bind:open={openModal} autoclose size="sm" class="w-full">
+<Modal
+  title=""
+  bind:open={openModal}
+  autoclose
+  size="sm"
+  class="w-full"
+  backdropClass="fixed inset-0 z-40 bg-gray-900/80"
+>
   <svg
     class="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto"
     aria-hidden="true"
