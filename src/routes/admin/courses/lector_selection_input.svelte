@@ -8,6 +8,7 @@
   let lectorValues: any[] = $state([]);
   onMount(async () => {
     let lectors = await GetLectors();
+    lectors.sort((a, b) => a.fio.localeCompare(b.fio));
     lectors.forEach((v) => {
       lectorValues = [...lectorValues, { value: v.id, name: v.fio }];
     });
