@@ -47,33 +47,29 @@
   let activeUrl = $derived(page.url.pathname);
 
   const logout = async () => {
-    let isSuccessful = await Logout();
-    if (isSuccessful) {
+    if (await Logout()) {
       await fetchUserPages();
       goto("/");
     }
   };
 </script>
 
-<Navbar class="bg-primary-100">
+<Navbar>
   <DarkMode />
   <div class="flex flex-row gap-3">
     <NavUl
       hidden={false}
-      class="order-1"
       {activeUrl}
-      ulClass="flex flex-col p-4 mt-4 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:text-sm md:font-medium items-center"
+      ulClass="flex flex-col p-4 mt-4 md:flex-row border-0 md:space-x-8 rtl:space-x-reverse md:mt-0 md:text-sm md:font-medium items-center"
     >
       {#each pages as page}
         <NavLi href={page.url}>{page.prettyName}</NavLi>
       {/each}
-      <div class="flex order-2">
+      <div class="flex">
         {#if role == "guest"}
           <Button size="sm" onclick={() => (loginModal = true)}>Войти</Button>
         {:else}
-          <div class="items-center">
-            <Avatar id="avatar-menu" />
-          </div>
+          <Avatar id="avatar-menu" />
           <Dropdown placement="bottom" triggeredBy="#avatar-menu">
             <DropdownItem href="/profile">Профиль</DropdownItem>
             <DropdownDivider />
