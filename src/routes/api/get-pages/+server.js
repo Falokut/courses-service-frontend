@@ -13,7 +13,7 @@ const pagesByRole = {
             prettyName: 'Домашняя'
         },
         {
-            url: '/courses',
+            url: '/admin/courses',
             prettyName: 'Курсы'
         }
     ],
