@@ -2,6 +2,8 @@ import { DefaultClient } from "$lib/utils/client";
 import type { Course } from "$lib/types/course"
 import type { CoursePreview } from "$lib/types/course_preview";
 import { GetSessionId } from "$lib/utils/session";
+import type { EditCourseRequest } from "$lib/types/edit_course_request";
+import type { AddCourseRequest } from "$lib/types/add_course_request";
 
 const courseByIdEndpoint = "/courses/by_id"
 export async function GetCourse(id: string): Promise<Course> {
@@ -56,4 +58,37 @@ export async function UserCourses(): Promise<CoursePreview[]> {
         DefaultClient.UserBearerAuthHeader(sessionId),
     ).
         then(r => r.json())
+}
+
+const deleteCourseEndpoint = "/courses"
+export async function DeleteCourse(id: number): Promise<boolean> {
+    let sessionId = GetSessionId()
+    if (!sessionId || sessionId == "") {
+        throw Error("метод не доступен, пользователь не авторизован")
+    }
+    let r = await DefaultClient.Delete(deleteCourseEndpoint, { "courseId": id }, DefaultClient.UserBearerAuthHeader(sessionId))
+    return r.ok
+}
+
+const addCourseEndpoint = "/courses"
+export async function AddCourse(req: AddCourseRequest): Promise<string> {
+    let sessionId = GetSessionId()
+    if (!sessionId || sessionId == "") {
+        throw Error("метод не доступен, пользователь не авторизован")
+    }
+    return await DefaultClient.PostJSON(addCourseEndpoint, req, DefaultClient.UserBearerAuthHeader(sessionId)).
+        then(r => r.json()).
+        then(r => r.previewPictureUrl)
+}
+
+
+const editCourseEndpoint = "/courses/edit"
+export async function EditCourse(req: EditCourseRequest): Promise<string> {
+    let sessionId = GetSessionId()
+    if (!sessionId || sessionId == "") {
+        throw Error("метод не доступен, пользователь не авторизован")
+    }
+    return await DefaultClient.PostJSON(editCourseEndpoint, req, DefaultClient.UserBearerAuthHeader(sessionId)).
+        then(r => r.json()).
+        then(r => r.newPreviewPictureUrl)
 }

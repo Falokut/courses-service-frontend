@@ -3,7 +3,6 @@
   import {
     TableBody,
     TableHead,
-    TableHeadCell,
     TableSearch,
     Button,
     ButtonGroup,
@@ -53,6 +52,10 @@
     FilterPredicate = filterPredicate,
     AddItem = () => {},
   } = $props();
+
+  export const ItemAdded = () => {
+    refetchPageData(true);
+  };
   const batchSize = 100;
 
   let paginator = $derived(new Paginator<any>(FetchData, batchSize));
@@ -61,10 +64,6 @@
     paginator.deleteItem((v) => {
       return id == v.id;
     });
-    refetchPageData(true);
-  };
-
-  const ItemAdded = () => {
     refetchPageData(true);
   };
 
@@ -161,7 +160,6 @@
             rowClass={rowAndHeaderClass}
             bind:value={filteredItems[i]}
             {ItemDeleted}
-            {ItemAdded}
           />
         {/each}
       {:else}
@@ -170,7 +168,6 @@
             rowClass={rowAndHeaderClass}
             bind:value={currentPageItems[i]}
             {ItemDeleted}
-            {ItemAdded}
           />
         {/each}
       {/if}

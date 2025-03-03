@@ -20,7 +20,7 @@
   >
     {#each courses as course}
       <Card
-        img={course.preview_picture_url}
+        img={course.previewPictureUrl}
         class="rounded-lg shadow-lg transition-transform transform hover:scale-105"
         href="/courses/{course.id}"
       >

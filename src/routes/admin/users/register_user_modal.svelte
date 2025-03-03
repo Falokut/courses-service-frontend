@@ -5,7 +5,7 @@
   import { AddMessage } from "../../../routes/hooks.client";
   import RolesSelectInput from "./roles_select_input.svelte";
   let showPassword = $state(false);
-  let { formModal = $bindable() } = $props();
+  let { formModal = $bindable(), ItemAdded = () => {} } = $props();
 
   let input = $state({
     name: "",
@@ -27,9 +27,10 @@
       password: input.password,
       roleId: input.roleId,
     });
-    formModal = !isSuccess;
     if (isSuccess) {
       AddMessage("пользователь успешно зарегистрирован", false);
+      formModal = false;
+      ItemAdded();
     }
   }
 </script>

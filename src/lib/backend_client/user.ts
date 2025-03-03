@@ -123,3 +123,8 @@ export async function GetUserProfile(): Promise<UserProfile> {
         DefaultClient.UserBearerAuthHeader(sessionId),
     ).then(r => r.json())
 }
+
+const getLectorsEndpoint = "/users/lectors"
+export async function GetLectors(): Promise<User[]> {
+    return await DefaultClient.Get(getLectorsEndpoint).then(r => r.json())
+}

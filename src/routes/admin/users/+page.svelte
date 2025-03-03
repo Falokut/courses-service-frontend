@@ -29,9 +29,12 @@
   const AddItem = () => {
     formRegisterModal = true;
   };
+
+  let table = $state<CrudTable>();
 </script>
 
 <CrudTable
+  bind:this={table}
   BodyRow={UserRow}
   HeaderRow={UserHeader}
   AddLabel={"Добавить пользователя"}
@@ -40,4 +43,9 @@
   {AddItem}
 />
 
-<RegisterUserModal bind:formModal={formRegisterModal}></RegisterUserModal>
+{#if table}
+  <RegisterUserModal
+    bind:formModal={formRegisterModal}
+    ItemAdded={table.ItemAdded}
+  />
+{/if}
