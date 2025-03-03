@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { GetRoles } from "$lib/backend_client/roles";
   import { EditUser } from "$lib/backend_client/user";
   import { Button, Modal, Label, Input, Select } from "flowbite-svelte";
   import { EyeOutline, EyeSlashOutline } from "flowbite-svelte-icons";
-  import { onMount } from "svelte";
-  import { AddMessage } from "../../routes/hooks.client";
+  import { AddMessage } from "../../hooks.client";
   import type { User } from "$lib/types/user";
+  import RolesSelectInput from "./roles_select_input.svelte";
   let showPassword = $state(false);
   let { formModal = $bindable(), user = $bindable<User>() } = $props();
 
@@ -17,6 +16,8 @@
     password: "",
     roleId: 0,
   });
+
+  let roleName = $state("");
 
   function parseFullName(fullName: string) {
     const parts = fullName.trim().split(/\s+/);
@@ -41,29 +42,14 @@
       roleId: input.roleId,
     };
 
-    let isSuccess = await EditUser(updateReq);
-    formModal = !isSuccess;
-    if (isSuccess) {
+    if (await EditUser(updateReq)) {
       AddMessage("данные пользователя успешно изменены", false);
       user.fio = updateReq.fio;
       user.username = updateReq.username;
-      const roleIndex = rolesValues.findIndex((v) => {
-        return v.value == input.roleId;
-      });
-      if (roleIndex != -1) {
-        user.roleName = rolesValues[roleIndex].name;
-      }
+      user.roleName = roleName;
+      formModal = false;
     }
   }
-
-  let rolesValues: any[] = $state([]);
-
-  onMount(async () => {
-    let roles = await GetRoles();
-    roles.forEach((v) => {
-      rolesValues = [...rolesValues, { value: v.id, name: v.name }];
-    });
-  });
 
   $effect(() => {
     const fio = parseFullName(user.fio);
@@ -71,12 +57,7 @@
     input.name = fio.firstName;
     input.patronymic = fio.patronymic;
     input.username = user.username;
-    const roleIndex = rolesValues.findIndex((v) => {
-      return v.name == user.roleName;
-    });
-    if (roleIndex != -1) {
-      input.roleId = rolesValues[roleIndex].value;
-    }
+    roleName = user.roleName;
   });
 </script>
 
@@ -99,6 +80,7 @@
           placeholder="Фамилия"
           autocomplete="family-name"
           bind:value={input.lastName}
+          minlength={2}
           required
         />
       </div>
@@ -109,6 +91,7 @@
           placeholder="Имя"
           autocomplete="given-name"
           bind:value={input.name}
+          minlength={2}
           required
         />
       </div>
@@ -130,6 +113,8 @@
           placeholder="Имя пользователя"
           autocomplete="username"
           bind:value={input.username}
+          minlength={4}
+          maxlength={50}
           required
         />
       </div>
@@ -141,6 +126,8 @@
           placeholder="Пароль"
           autocomplete="new-password"
           required
+          minlength={6}
+          maxlength={20}
           bind:value={input.password}
         >
           <button
@@ -159,10 +146,8 @@
       </div>
     </div>
     <div>
-      <Label>
-        Роль
-        <Select class="mt-2" items={rolesValues} bind:value={input.roleId} />
-      </Label>
+      <RolesSelectInput bind:roleId={input.roleId} bind:roleName
+      ></RolesSelectInput>
     </div>
     <Button type="submit" class="w-full">Сохранить</Button>
   </form>

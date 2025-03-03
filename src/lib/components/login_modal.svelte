@@ -36,6 +36,8 @@
         placeholder="Имя пользователя"
         autocomplete="username"
         bind:value={input.username}
+        minlength={4}
+        maxlength={50}
         required
       />
     </div>
@@ -47,6 +49,8 @@
         placeholder="Пароль"
         autocomplete="current-password"
         required
+        minlength={6}
+        maxlength={20}
         bind:value={input.password}
       >
         <button

@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { GetRoles } from "$lib/backend_client/roles";
   import { Register } from "$lib/backend_client/user";
   import { Button, Modal, Label, Input, Select } from "flowbite-svelte";
   import { EyeOutline, EyeSlashOutline } from "flowbite-svelte-icons";
-  import { onMount } from "svelte";
-  import { AddMessage } from "../../routes/hooks.client";
+  import { AddMessage } from "../../../routes/hooks.client";
+  import RolesSelectInput from "./roles_select_input.svelte";
   let showPassword = $state(false);
   let { formModal = $bindable() } = $props();
 
@@ -33,15 +32,6 @@
       AddMessage("пользователь успешно зарегистрирован", false);
     }
   }
-
-  let rolesValues: any[] = $state([]);
-
-  onMount(async () => {
-    let roles = await GetRoles();
-    roles.forEach((v) => {
-      rolesValues = [...rolesValues, { value: v.id, name: v.name }];
-    });
-  });
 </script>
 
 <Modal
@@ -63,6 +53,7 @@
           placeholder="Фамилия"
           autocomplete="family-name"
           bind:value={input.lastName}
+          minlength={2}
           required
         />
       </div>
@@ -73,6 +64,7 @@
           placeholder="Имя"
           autocomplete="given-name"
           bind:value={input.name}
+          minlength={2}
           required
         />
       </div>
@@ -94,6 +86,8 @@
           placeholder="Имя пользователя"
           autocomplete="username"
           bind:value={input.username}
+          minlength={4}
+          maxlength={50}
           required
         />
       </div>
@@ -105,6 +99,8 @@
           placeholder="Пароль"
           autocomplete="new-password"
           required
+          minlength={6}
+          maxlength={20}
           bind:value={input.password}
         >
           <button
@@ -123,10 +119,7 @@
       </div>
     </div>
     <div>
-      <Label>
-        Роль
-        <Select class="mt-2" items={rolesValues} bind:value={input.roleId} />
-      </Label>
+      <RolesSelectInput bind:roleId={input.roleId}></RolesSelectInput>
     </div>
     <Button type="submit" class="w-full">Зарегистрировать</Button>
   </form>

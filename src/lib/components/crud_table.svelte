@@ -46,7 +46,7 @@
   };
 
   let {
-    HeaderCells = $bindable([]),
+    HeaderRow = $bindable(),
     AddLabel = $bindable(""),
     FetchData = emptyFetchData,
     BodyRow = $bindable(),
@@ -152,11 +152,8 @@
         <PlusOutline class="h-3.5 w-3.5 mr-2" />{AddLabel}
       </Button>
     </div>
-    <TableHead class={rowAndHeaderClass}>
-      {#each HeaderCells as cell}
-        <TableHeadCell padding="px-4 py-3" scope="col">{cell}</TableHeadCell>
-      {/each}
-    </TableHead>
+    <HeaderRow headerClass={rowAndHeaderClass} />
+    <TableHead class={rowAndHeaderClass}></TableHead>
     <TableBody class="divide-y">
       {#if searchTerm !== ""}
         {#each filteredItems as value}

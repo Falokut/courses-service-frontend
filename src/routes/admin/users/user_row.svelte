@@ -1,8 +1,8 @@
 <script lang="ts">
   import { DeleteUser } from "$lib/backend_client/user";
   import { Button, TableBodyCell, TableBodyRow } from "flowbite-svelte";
-  import DeleteModal from "../delete_modal.svelte";
-  import EditUserModal from "../edit_user_modal.svelte";
+  import DeleteModal from "$lib/components/delete_modal.svelte";
+  import EditUserModal from "./edit_user_modal.svelte";
   let emptyItemDeleted = (id: any) => {};
   let {
     value = $bindable(),
