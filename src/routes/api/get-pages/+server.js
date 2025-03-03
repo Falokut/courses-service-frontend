@@ -25,6 +25,10 @@ const pagesByRole = {
         {
             url: '/courses',
             prettyName: 'Курсы'
+        },
+        {
+            url: '/courses/my',
+            prettyName: 'Мои курсы'
         }
     ],
     lector: [

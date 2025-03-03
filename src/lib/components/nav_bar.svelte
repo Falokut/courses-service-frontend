@@ -21,7 +21,7 @@
   let role = $state("");
 
   const fetchUserPages = async () => {
-    const res = await fetch("/api/get-role", {
+    const res = await fetch("/api/get-pages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

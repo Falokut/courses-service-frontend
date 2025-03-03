@@ -5,18 +5,22 @@
   import { Section } from "flowbite-svelte-blocks";
   import Lessons from "./lessons.svelte";
   import SelectedLesson from "./selected_lesson.svelte";
-  import { GetCourse } from "$lib/backend_client/course";
+  import {
+    GetCourse,
+    IsUserRegistered,
+    RegisterOnCourse,
+  } from "$lib/backend_client/course";
   import type { Lesson } from "$lib/types/lesson";
   import type { Course } from "$lib/types/course";
 
   let course = $state<Course | null>(null);
-  let isRegistered = $state(false);
+  let isRegistered = $state(true);
   let selectedLesson = $state<Lesson | null>(null);
 
   const fetchCourse = async (courseId: string) => {
     course = await GetCourse(courseId);
+    isRegistered = await IsUserRegistered(courseId);
 
-    isRegistered = false;
     selectedLesson = course.lessons[0];
   };
   onMount(async () => {
@@ -25,7 +29,9 @@
   });
 
   const registerForCourse = async () => {
-    isRegistered = true;
+    if (course && (await RegisterOnCourse(course.id))) {
+      isRegistered = true;
+    }
   };
 </script>
 
