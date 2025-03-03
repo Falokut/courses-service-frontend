@@ -39,8 +39,8 @@
     }
   };
 
-  onMount(() => {
-    fetchUserPages();
+  onMount(async () => {
+    await fetchUserPages();
   });
 
   let loginModal = $state(false);
@@ -49,6 +49,7 @@
   const logout = async () => {
     let isSuccessful = await Logout();
     if (isSuccessful) {
+      await fetchUserPages();
       goto("/");
     }
   };
@@ -57,8 +58,12 @@
 <Navbar class="bg-primary-100">
   <DarkMode />
   <div class="flex flex-row gap-3">
-    <NavUl hidden={false} class="order-1" {activeUrl} 
-    ulClass="flex flex-col p-4 mt-4 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:text-sm md:font-medium items-center">
+    <NavUl
+      hidden={false}
+      class="order-1"
+      {activeUrl}
+      ulClass="flex flex-col p-4 mt-4 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:text-sm md:font-medium items-center"
+    >
       {#each pages as page}
         <NavLi href={page.url}>{page.prettyName}</NavLi>
       {/each}
