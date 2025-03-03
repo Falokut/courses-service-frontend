@@ -21,7 +21,8 @@
   const filterPredicate = (item: any, searchTerm: string): boolean => {
     return (
       item.username.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
-      item.fio.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+      item.fio.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+      item.roleName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
     );
   };
 
