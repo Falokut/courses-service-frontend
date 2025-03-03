@@ -156,19 +156,19 @@
     <TableHead class={rowAndHeaderClass}></TableHead>
     <TableBody class="divide-y">
       {#if searchTerm !== ""}
-        {#each filteredItems as value}
+        {#each filteredItems as _blank, i}
           <BodyRow
             rowClass={rowAndHeaderClass}
-            {value}
+            bind:value={filteredItems[i]}
             {ItemDeleted}
             {ItemAdded}
           />
         {/each}
       {:else}
-        {#each currentPageItems as value}
+        {#each currentPageItems as _, i}
           <BodyRow
             rowClass={rowAndHeaderClass}
-            {value}
+            bind:value={currentPageItems[i]}
             {ItemDeleted}
             {ItemAdded}
           />
