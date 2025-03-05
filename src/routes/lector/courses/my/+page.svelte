@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { UserCourses } from "$lib/backend_client/course";
+  import { LectorCourses } from "$lib/backend_client/course";
   import type { CoursePreview } from "$lib/types/course_preview";
   import { Card } from "flowbite-svelte";
   import { onMount } from "svelte";
 
   let courses = $state<CoursePreview[]>([]);
   onMount(async () => {
-    courses = await UserCourses();
+    courses = await LectorCourses();
   });
 </script>
 
@@ -29,9 +29,6 @@
         >
           {course.title}
         </h5>
-        <p class="font-normal text-gray-700 dark:text-gray-400">
-          Автор: {course.authorFio}
-        </p>
       </Card>
     {/each}
   </div>

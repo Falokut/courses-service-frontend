@@ -60,6 +60,19 @@ export async function UserCourses(): Promise<CoursePreview[]> {
         then(r => r.json())
 }
 
+const lectorCoursesEndpoint = "/courses/lector_courses"
+export async function LectorCourses(): Promise<CoursePreview[]>  {
+    let sessionId = GetSessionId()
+    if (!sessionId || sessionId == "") {
+        throw Error("метод не доступен, пользователь не авторизован")
+    }
+    return await DefaultClient.Get(lectorCoursesEndpoint,
+        null,
+        DefaultClient.UserBearerAuthHeader(sessionId),
+    ).
+        then(r => r.json())
+}
+
 const deleteCourseEndpoint = "/courses"
 export async function DeleteCourse(id: number): Promise<boolean> {
     let sessionId = GetSessionId()

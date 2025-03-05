@@ -2,9 +2,9 @@ import { redirect } from '@sveltejs/kit';
 
 const allowedByDefaultPages = ["/", "/access-denied", "/error"];
 const allowedUrlByRoles = {
-    admin: ["/admin", "/profile", "/admin/course"],
-    student: ["/profile", "/course"],
-    lector: ["/profile", "/course"]
+    admin: ["/admin", "/profile"],
+    student: ["/profile", "/student"],
+    lector: ["/profile", "/lector"]
 };
 
 /** @type {import('@sveltejs/kit').Handle} */

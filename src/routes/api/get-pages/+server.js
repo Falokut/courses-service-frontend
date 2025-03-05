@@ -5,12 +5,12 @@ import { json } from '@sveltejs/kit';
 const pagesByRole = {
     admin: [
         {
-            url: '/admin/users',
-            prettyName: 'Пользователи'
-        },
-        {
             url: '/',
             prettyName: 'Домашняя'
+        },
+        {
+            url: '/admin/users',
+            prettyName: 'Пользователи'
         },
         {
             url: '/admin/courses',
@@ -23,11 +23,11 @@ const pagesByRole = {
             prettyName: 'Домашняя'
         },
         {
-            url: '/courses',
+            url: '/student/courses',
             prettyName: 'Курсы'
         },
         {
-            url: '/courses/my',
+            url: '/student/courses/my',
             prettyName: 'Мои курсы'
         }
     ],
@@ -37,8 +37,8 @@ const pagesByRole = {
             prettyName: 'Домашняя'
         },
         {
-            url: '/courses',
-            prettyName: 'Курсы'
+            url: '/lector/courses/my',
+            prettyName: 'Мои курсы'
         }
     ],
     guest: [

@@ -34,7 +34,7 @@
       role = data.roleName;
       pages = data.pages;
       pages.sort((a, b) => {
-        return ("" + a.url).localeCompare(b.url);
+        return ("" + a.prettyName).localeCompare(b.prettyName);
       });
     }
   };

@@ -62,7 +62,7 @@
       <Card
         img={course.previewPictureUrl}
         class="rounded-lg shadow-lg transition-transform transform hover:scale-105"
-        href="/courses/{course.id}"
+        href="/student/courses/{course.id}"
       >
         <h5
           class="text-xl font-bold tracking-tight text-gray-900 dark:text-white"
