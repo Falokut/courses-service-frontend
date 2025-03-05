@@ -52,8 +52,8 @@
   }
 </script>
 
-<Section name="content" sectionClass="p-3 sm:p-5">
-  <div class="flex justify-between mb-3 flex-nowrap">
+<Section name="content" sectionClass="w-full mt-5">
+  <div class="flex justify-between mb-5 flex-nowrap w-full">
     <Heading class="text-2xl">Текущие сессии</Heading>
     <Button
       color={"primary"}
@@ -61,6 +61,7 @@
         sortAsc = !sortAsc;
         sortSessions();
       }}
+      size="sm"
     >
       Сортировать по дате: {sortAsc ? "↑" : "↓"}
     </Button>
@@ -68,17 +69,18 @@
 
   <Listgroup>
     {#each sessions as session}
-      <ListgroupItem>
-        <div class="flex justify-between items-center w-full">
+      <ListgroupItem itemDefaultClass="px-4 w-full text-sm font-medium">
+        <div class="flex justify-between items-center border-0">
           <P class="text-sm font-semibold">
             Сессия от {session.createdAt.format(timeFormat)}
           </P>
           <Button
-            class="!text-white !bg-red-600"
+            color="red"
             on:click={() => {
               selectedSession = session;
               openModal = true;
             }}
+            size="sm"
           >
             Завершить
           </Button>
