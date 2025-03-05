@@ -177,29 +177,31 @@
       class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
       aria-label="Table navigation"
     >
-      <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-        <span class="font-semibold text-gray-900 dark:text-white"
-          >{startRange}-{endRange}</span
-        >
-      </span>
-      <ButtonGroup>
-        <Button on:click={loadPreviousPage} disabled={currentPage === 1}>
-          <ChevronLeftOutline size="xs" class="m-1.5" />
-        </Button>
-        {#each pagesToShow as pageNumber}
-          <Button
-            disabled={currentPage == pageNumber}
-            on:click={() => goToPage(pageNumber)}
-            >{pageNumber}
+      {#if searchTerm === ""}
+        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+          <span class="font-semibold text-gray-900 dark:text-white"
+            >{startRange}-{endRange}</span
+          >
+        </span>
+        <ButtonGroup>
+          <Button on:click={loadPreviousPage} disabled={currentPage === 1}>
+            <ChevronLeftOutline size="xs" class="m-1.5" />
           </Button>
-        {/each}
-        <Button
-          on:click={loadNextPage}
-          disabled={currentPage >= totalPages && !paginator.canLoadMore}
-        >
-          <ChevronRightOutline size="xs" class="m-1.5" />
-        </Button>
-      </ButtonGroup>
+          {#each pagesToShow as pageNumber}
+            <Button
+              disabled={currentPage == pageNumber}
+              on:click={() => goToPage(pageNumber)}
+              >{pageNumber}
+            </Button>
+          {/each}
+          <Button
+            on:click={loadNextPage}
+            disabled={currentPage >= totalPages && !paginator.canLoadMore}
+          >
+            <ChevronRightOutline size="xs" class="m-1.5" />
+          </Button>
+        </ButtonGroup>
+      {/if}
     </div>
   </TableSearch>
 </Section>
