@@ -11,13 +11,13 @@
 </script>
 
 {#if lesson != null}
-  {#if lesson.video_url}
+  {#if lesson.videoUrl}
     <Video
-      src={lesson.video_url}
+      src={lesson.videoUrl}
       controls
       allowfullscreen
       frameborder={0}
-      trackSrc={lesson.video_url}
+      trackSrc={lesson.videoUrl}
       class={videoDivClass}
     />
   {/if}

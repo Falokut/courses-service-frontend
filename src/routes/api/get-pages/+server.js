@@ -37,7 +37,7 @@ const pagesByRole = {
             prettyName: 'Домашняя'
         },
         {
-            url: '/lector/courses/my',
+            url: '/lector/courses',
             prettyName: 'Мои курсы'
         }
     ],
