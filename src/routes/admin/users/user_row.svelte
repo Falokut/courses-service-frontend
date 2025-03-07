@@ -24,6 +24,7 @@
   <TableBodyCell class="flex flex-row !content-between">
     <div class="flex justify-center items-center space-x-4 w-full">
       <Button
+        id="delete-{value.username}-button"
         class="!text-white !bg-red-600"
         onclick={() => (openDeleteModal = true)}
       >
