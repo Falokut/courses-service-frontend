@@ -21,10 +21,9 @@
   <TableBodyCell>{value.id}</TableBodyCell>
   <TableBodyCell>{value.title}</TableBodyCell>
   <TableBodyCell>{value.authorFio}</TableBodyCell>
-  <TableBodyCell
-    ><A href={value.previewPictureUrl}>{value.previewPictureUrl}</A
-    ></TableBodyCell
-  >
+  <TableBodyCell>
+    <A href={value.previewPictureUrl}>ссылка</A>
+  </TableBodyCell>
   <TableBodyCell class="flex flex-row !content-between">
     <div class="flex justify-center items-center space-x-4 w-full">
       <Button
