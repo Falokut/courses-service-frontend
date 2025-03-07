@@ -38,7 +38,11 @@
     {DeleteText}
   </p>
   <div class="flex justify-center items-center space-x-4">
-    <Button color="light" on:click={HandleCancel}>Нет, отменить</Button>
-    <Button color="red" on:click={HandleDelete}>Да, я уверен</Button>
+    <Button id="cancel-delete-button" color="light" on:click={HandleCancel}
+      >Нет, отменить</Button
+    >
+    <Button id="accept-deletion-button" color="red" on:click={HandleDelete}
+      >Да, я уверен</Button
+    >
   </div>
 </Modal>

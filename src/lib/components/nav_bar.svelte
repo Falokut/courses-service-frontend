@@ -67,13 +67,19 @@
       {/each}
       <div class="flex">
         {#if role == "guest"}
-          <Button size="sm" onclick={() => (loginModal = true)}>Войти</Button>
+          <Button
+            id="menu-sign-up-button"
+            size="sm"
+            onclick={() => (loginModal = true)}>Войти</Button
+          >
         {:else}
           <Avatar id="avatar-menu" />
           <Dropdown placement="bottom" triggeredBy="#avatar-menu">
             <DropdownItem href="/profile">Профиль</DropdownItem>
             <DropdownDivider />
-            <DropdownItem onclick={logout}>Выйти</DropdownItem>
+            <DropdownItem id="logout-button" onclick={logout}
+              >Выйти</DropdownItem
+            >
           </Dropdown>
         {/if}
       </div>

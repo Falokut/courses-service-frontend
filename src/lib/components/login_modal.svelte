@@ -67,6 +67,6 @@
         </button>
       </Input>
     </div>
-    <Button type="submit" class="w-full">Войти</Button>
+    <Button id="sign-up-button" type="submit" class="w-full">Войти</Button>
   </form>
 </Modal>

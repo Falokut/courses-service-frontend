@@ -17,19 +17,23 @@
 </script>
 
 <TableBodyRow class={rowClass}>
-  <TableBodyCell>{value.id}</TableBodyCell>
-  <TableBodyCell>{value.fio}</TableBodyCell>
-  <TableBodyCell>{value.username}</TableBodyCell>
+  <TableBodyCell id="{value.username}-id-div">{value.id}</TableBodyCell>
+  <TableBodyCell id="{value.username}-fio-div">{value.fio}</TableBodyCell>
+  <TableBodyCell id="{value.username}-username-div">{value.username}</TableBodyCell>
   <TableBodyCell>{value.roleName}</TableBodyCell>
   <TableBodyCell class="flex flex-row !content-between">
     <div class="flex justify-center items-center space-x-4 w-full">
       <Button
+        id="delete-{value.username}-button"
         class="!text-white !bg-red-600"
         onclick={() => (openDeleteModal = true)}
       >
         Удалить
       </Button>
-      <Button onclick={() => (openEditModal = true)}>Редактировать</Button>
+      <Button
+        id="edit-{value.username}-button"
+        onclick={() => (openEditModal = true)}>Редактировать</Button
+      >
     </div>
   </TableBodyCell>
 </TableBodyRow>
