@@ -39,7 +39,7 @@
 
   const createLesson = async () => {
     if (!input) return;
-    input.lessonNumber = lessons.length;
+    input.lessonNumber = lessons.length + 1;
     input.courseId = courseId;
     await CreateLesson(input);
     showCreateModal = false;
